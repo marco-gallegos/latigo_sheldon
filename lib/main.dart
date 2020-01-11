@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
-
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,7 +32,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -50,29 +50,55 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int latigazos = 0;
   bool latiguear = false;
+  bool waitLatigazo = false;
   List<double> accelerometerValues;
   List<StreamSubscription<dynamic>> streamSubscriptions =
       <StreamSubscription<dynamic>>[];
+  // audio play
+  AudioCache audioCache;
+  AudioPlayer advancedPlayer;
+
 
   bool isLatigazoMovement(){
-    if ( accelerometerValues[0].abs() > 5 && accelerometerValues[1].abs() < 8.5) {
+    if ( accelerometerValues[0].abs() > 6.3 && accelerometerValues[1].abs() < 7.7) {
       return true;
     }
     return false;
   }
 
   void hadleAccelerometerChange(AccelerometerEvent event){
-    //print(event);
+    // actualiza el valor del sensor
     setState(() {
       accelerometerValues = <double>[event.x, event.y, event.z];
     });
-
+    
     latiguear = isLatigazoMovement();
+
+    if (latiguear && !waitLatigazo) {
+      // deshabilitamos el latigazo un rato
+      setState(() {
+        waitLatigazo = true;
+      });
+
+      Future.delayed(const Duration(milliseconds: 600), () {
+        // Here you can write your code
+        print("se libera el latigazo");
+        habilitarLatigazo();
+      });
+      
+      latiguearEsclavo();
+    }
+  }
+
+  void initPlayer(){
+    advancedPlayer = new AudioPlayer();
+    audioCache = new AudioCache(fixedPlayer: advancedPlayer);
   }
 
   @override
   void initState(){
     super.initState();
+    initPlayer();
     //accelerometer events
     streamSubscriptions.add(accelerometerEvents.listen(hadleAccelerometerChange));
   }
@@ -94,8 +120,18 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       latigazos++;
     });
+    audioCache.play('audio/latigazo.mp3');
   }
 
+  void latigazoManual(){
+    latiguearEsclavo();
+  }
+
+  void habilitarLatigazo(){
+    setState(() {
+      waitLatigazo = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: latiguearEsclavo,
+        onPressed: latigazoManual,
         tooltip: 'Increment',
         child: Icon(Icons.whatshot),
       ), // This trailing comma makes auto-formatting nicer for build methods.
