@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
 
@@ -12,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Latigo CAIN',
+      title: 'Latigo Tiranico CAIN',
       theme: ThemeData(
         // This is the theme of your application.
         //
