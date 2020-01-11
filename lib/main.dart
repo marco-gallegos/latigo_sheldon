@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
@@ -51,8 +50,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int latigazos = 0;
-  List<double> _userAccelerometerValues;
-  List<StreamSubscription<dynamic>> _streamSubscriptions =
+  List<double> accelerometerValues;
+  List<StreamSubscription<dynamic>> streamSubscriptions =
       <StreamSubscription<dynamic>>[];
 
   @override
@@ -60,9 +59,10 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     //UserAccelerometer events
-    _streamSubscriptions.add(userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+    streamSubscriptions.add(accelerometerEvents.listen((AccelerometerEvent event) {
+        print(event);
         setState(() {
-          _userAccelerometerValues = <double>[event.x, event.y, event.z];
+          accelerometerValues = <double>[event.x, event.y, event.z];
         });
       })
     );
@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    for (StreamSubscription<dynamic> sub in _streamSubscriptions) {
+    for (StreamSubscription<dynamic> sub in streamSubscriptions) {
       sub.cancel();
     }
     super.dispose();
@@ -90,10 +90,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> userAccelerometer = _userAccelerometerValues
+    /*
+    lo convierte a un string mas corto
+    final List<String> accelerometer = accelerometerValues
         ?.map((double v) => v.toStringAsFixed(1))
         ?.toList();
-
+    */
+    final String xAxis = accelerometerValues[0].toString();
+    final String yAxis = accelerometerValues[1].toString();
+    final String zAxis = accelerometerValues[2].toString();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -126,7 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('UserAccelerometer: $userAccelerometer'),
+            Text('Accelerometer:'),
+            Text('x : $xAxis'),
+            Text('y : $yAxis'),
+            Text('z : $zAxis'),
             Text(
               'hoy has dado :',
             ),
