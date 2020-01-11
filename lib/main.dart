@@ -49,22 +49,32 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int latigazos = 0;
+  bool latiguear = false;
   List<double> accelerometerValues;
   List<StreamSubscription<dynamic>> streamSubscriptions =
       <StreamSubscription<dynamic>>[];
 
+  bool isLatigazoMovement(){
+    if ( accelerometerValues[0].abs() > 5 && accelerometerValues[1].abs() < 8.5) {
+      return true;
+    }
+    return false;
+  }
+
+  void hadleAccelerometerChange(AccelerometerEvent event){
+    //print(event);
+    setState(() {
+      accelerometerValues = <double>[event.x, event.y, event.z];
+    });
+
+    latiguear = isLatigazoMovement();
+  }
+
   @override
   void initState(){
     super.initState();
-
-    //UserAccelerometer events
-    streamSubscriptions.add(accelerometerEvents.listen((AccelerometerEvent event) {
-        print(event);
-        setState(() {
-          accelerometerValues = <double>[event.x, event.y, event.z];
-        });
-      })
-    );
+    //accelerometer events
+    streamSubscriptions.add(accelerometerEvents.listen(hadleAccelerometerChange));
   }
 
   @override
@@ -130,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Accelerometer:'),
+            Text('Accelerometer: $latiguear'),
             Text('x : $xAxis'),
             Text('y : $yAxis'),
             Text('z : $zAxis'),
