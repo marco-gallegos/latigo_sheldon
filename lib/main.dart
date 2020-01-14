@@ -97,6 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
     for (StreamSubscription<dynamic> sub in streamSubscriptions) {
       sub.cancel();
     }
+    audioCache = null;
+    advancedPlayer = null;
     super.dispose();
   }
 
@@ -134,9 +136,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ?.map((double v) => v.toStringAsFixed(1))
         ?.toList();
     */
-    final String xAxis = accelerometerValues[0].toString();
-    final String yAxis = accelerometerValues[1].toString();
-    final String zAxis = accelerometerValues[2].toString();
+    //final String xAxis = accelerometerValues[0].toString();
+    //final String yAxis = accelerometerValues[1].toString();
+    //final String zAxis = accelerometerValues[2].toString();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -169,12 +171,12 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Accelerometer: $latiguear'),
-            Text('x : $xAxis'),
-            Text('y : $yAxis'),
-            Text('z : $zAxis'),
+            //Text('Accelerometer: $latiguear'),
+            //Text('x : $xAxis'),
+            //Text('y : $yAxis'),
+            //Text('z : $zAxis'),
             Text(
-              'hoy has dado :',
+              'Has dado :',
             ),
             Text(
               '$latigazos',
