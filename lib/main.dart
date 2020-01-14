@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   bool isLatigazoMovement(){
-    if ( accelerometerValues[0].abs() > 6.3 && accelerometerValues[1].abs() < 7.7) {
+    if ( accelerometerValues[0].abs() > 8.3 && accelerometerValues[1].abs() < 8.3) {
       return true;
     }
     return false;
@@ -75,17 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
     latiguear = isLatigazoMovement();
 
     if (latiguear && !waitLatigazo) {
-      // deshabilitamos el latigazo un rato
-      setState(() {
-        waitLatigazo = true;
-      });
-
-      Future.delayed(const Duration(milliseconds: 600), () {
-        // Here you can write your code
-        print("se libera el latigazo");
-        habilitarLatigazo();
-      });
-      
       latiguearEsclavo();
     }
   }
@@ -113,18 +102,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void latiguearEsclavo() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
+      //deshabilitamos el latigazo un rato
+      waitLatigazo = true;
       latigazos++;
     });
     audioCache.play('audio/latigazo.mp3');
+    Future.delayed(const Duration(milliseconds: 1000), () {
+        //print("se libera el latigazo");
+        habilitarLatigazo();
+      }
+    );
   }
 
   void latigazoManual(){
-    latiguearEsclavo();
+    if (!waitLatigazo) {
+      latiguearEsclavo();
+    }
   }
 
   void habilitarLatigazo(){
