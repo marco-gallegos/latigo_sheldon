@@ -21,7 +21,7 @@ dependencies:
     sdk: flutter
   sensors: ">=0.4.1"
   audioplayers:
-  flutter_launcher_icons:
+  #flutter_launcher_icons:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -31,10 +31,10 @@ dev_dependencies:
     sdk: flutter
 
 # cambio de el icono paquete flutter_launcher_icons: no jala
-flutter_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/whip.png"
+#flutter_icons:
+#  android: "launcher_icon"
+#  ios: true
+#  image_path: "assets/whip.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
