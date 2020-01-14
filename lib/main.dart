@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int latigazos = 0;
   bool latiguear = false;
   bool waitLatigazo = false;
-  List<double> accelerometerValues;
+  List<double> accelerometerValues = [0,0,0];
   List<StreamSubscription<dynamic>> streamSubscriptions =
       <StreamSubscription<dynamic>>[];
   // audio play
