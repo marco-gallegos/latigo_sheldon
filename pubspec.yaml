@@ -1,5 +1,5 @@
 name: latigo_sheldon
-description: A new Flutter project.
+description: Replica de app de latigo
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -19,8 +19,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sensors: ">=0.4.1+6"
-
+  sensors: ">=0.4.1"
+  audioplayers:
+  #flutter_launcher_icons:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -29,6 +30,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+# cambio de el icono paquete flutter_launcher_icons: no jala
+#flutter_icons:
+#  android: "launcher_icon"
+#  ios: true
+#  image_path: "assets/whip.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -42,7 +48,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    # Icons made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+    - assets/whip.png
+    - assets/audio/latigazo.mp3
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 

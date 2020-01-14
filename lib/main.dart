@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
-
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,7 +32,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -49,22 +49,47 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int latigazos = 0;
-  List<double> accelerometerValues;
+  bool latiguear = false;
+  bool waitLatigazo = false;
+  List<double> accelerometerValues = [0,0,0];
   List<StreamSubscription<dynamic>> streamSubscriptions =
       <StreamSubscription<dynamic>>[];
+  // audio play
+  AudioCache audioCache;
+  AudioPlayer advancedPlayer;
+
+
+  bool isLatigazoMovement(){
+    if ( accelerometerValues[0].abs() > 8.3 && accelerometerValues[1].abs() < 8.3) {
+      return true;
+    }
+    return false;
+  }
+
+  void hadleAccelerometerChange(AccelerometerEvent event){
+    // actualiza el valor del sensor
+    setState(() {
+      accelerometerValues = <double>[event.x, event.y, event.z];
+    });
+    
+    latiguear = isLatigazoMovement();
+
+    if (latiguear && !waitLatigazo) {
+      latiguearEsclavo();
+    }
+  }
+
+  void initPlayer(){
+    advancedPlayer = new AudioPlayer();
+    audioCache = new AudioCache(fixedPlayer: advancedPlayer);
+  }
 
   @override
   void initState(){
     super.initState();
-
-    //UserAccelerometer events
-    streamSubscriptions.add(accelerometerEvents.listen((AccelerometerEvent event) {
-        print(event);
-        setState(() {
-          accelerometerValues = <double>[event.x, event.y, event.z];
-        });
-      })
-    );
+    initPlayer();
+    //accelerometer events
+    streamSubscriptions.add(accelerometerEvents.listen(hadleAccelerometerChange));
   }
 
   @override
@@ -72,20 +97,36 @@ class _MyHomePageState extends State<MyHomePage> {
     for (StreamSubscription<dynamic> sub in streamSubscriptions) {
       sub.cancel();
     }
+    audioCache = null;
+    advancedPlayer = null;
     super.dispose();
   }
 
   void latiguearEsclavo() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
+      //deshabilitamos el latigazo un rato
+      waitLatigazo = true;
       latigazos++;
     });
+    audioCache.play('audio/latigazo.mp3');
+    Future.delayed(const Duration(milliseconds: 1350), () {
+        //print("se libera el latigazo");
+        habilitarLatigazo();
+      }
+    );
   }
 
+  void latigazoManual(){
+    if (!waitLatigazo) {
+      latiguearEsclavo();
+    }
+  }
+
+  void habilitarLatigazo(){
+    setState(() {
+      waitLatigazo = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +136,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ?.map((double v) => v.toStringAsFixed(1))
         ?.toList();
     */
-    final String xAxis = accelerometerValues[0].toString();
-    final String yAxis = accelerometerValues[1].toString();
-    final String zAxis = accelerometerValues[2].toString();
+    //final String xAxis = accelerometerValues[0].toString();
+    //final String yAxis = accelerometerValues[1].toString();
+    //final String zAxis = accelerometerValues[2].toString();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -130,12 +171,12 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Accelerometer:'),
-            Text('x : $xAxis'),
-            Text('y : $yAxis'),
-            Text('z : $zAxis'),
+            //Text('Accelerometer: $latiguear'),
+            //Text('x : $xAxis'),
+            //Text('y : $yAxis'),
+            //Text('z : $zAxis'),
             Text(
-              'hoy has dado :',
+              'Has dado :',
             ),
             Text(
               '$latigazos',
@@ -148,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: latiguearEsclavo,
+        onPressed: latigazoManual,
         tooltip: 'Increment',
         child: Icon(Icons.whatshot),
       ), // This trailing comma makes auto-formatting nicer for build methods.
